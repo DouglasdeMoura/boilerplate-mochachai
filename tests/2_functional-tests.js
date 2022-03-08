@@ -76,8 +76,12 @@ const Browser = require('zombie');
 
 suite('Functional Tests with Zombie.js', function () {
   this.timeout(5000);
-  Browser.localhost('localhost.com', 3000);
-  const browser = new Browser();  
+  Browser.site = 'https://boilerplate-mochachai.douglasdemoura.repl.co'
+  const browser = new Browser();
+
+  suiteSetup(function(done) {
+    return browser.visit('/', done);
+  });
 
   suite('Headless browser', function () {
     test('should have a working "site" property', function() {
@@ -88,19 +92,15 @@ suite('Functional Tests with Zombie.js', function () {
   suite('"Famous Italian Explorers" form', function () {
     // #5
     test('Submit the surname "Colombo" in the HTML form', function (done) {
-      browser.visit('/', () => {
-        browser.fill('surname', 'Colombo')
-        browser.pressButton('submit')
-      })
+      browser.fill('surname', 'Colombo')
+      browser.pressButton('submit')
       
       done();
     });
     // #6
     test('Submit the surname "Vespucci" in the HTML form', function (done) {
-      browser.visit('/', () => {
-        browser.fill('surname', 'Vespucci')
-        browser.pressButton('submit')
-      })
+      browser.fill('surname', 'Vespucci')
+      browser.pressButton('submit')
       
       done();
     });
