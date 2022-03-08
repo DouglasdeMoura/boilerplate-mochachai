@@ -15,8 +15,8 @@ suite('Functional Tests', function () {
         .request(server)
         .get('/hello')
         .end(function (err, res) {
-          assert.fail(res.status, 200);
-          assert.fail(res.text, 'hello Guest');
+          assert.equal(res.status, 200);
+          assert.equal(res.text, 'hello Guest');
           done();
         });
     });
@@ -26,8 +26,8 @@ suite('Functional Tests', function () {
         .request(server)
         .get('/hello?name=xy_z')
         .end(function (err, res) {
-          assert.fail(res.status, 200);
-          assert.fail(res.text, 'hello xy_z');
+          assert.equal(res.status, 200);
+          assert.equal(res.text, 'hello xy_z');
           done();
         });
     });
@@ -36,18 +36,32 @@ suite('Functional Tests', function () {
       chai
         .request(server)
         .put('/travellers')
-
+        .send({ surname: 'Colombo' })
         .end(function (err, res) {
-          assert.fail();
-
+          assert.equal(res.status, 200);
+          assert.deepEqual(res.body, {
+            name: 'Cristoforo',
+            surname: 'Colombo',
+            dates: '1451 - 1506'
+          });
           done();
         });
     });
     // #4
     test('Send {surname: "da Verrazzano"}', function (done) {
-      assert.fail();
-
-      done();
+      chai
+        .request(server)
+        .put('/travellers')
+        .send({ surname: 'da Verrazzano' })
+        .end(function (err, res) {
+          assert.equal(res.status, 200);
+          assert.deepEqual(res.body, {
+            name: 'Giovanni',
+            surname: 'da Verrazzano',
+            dates: '1485 - 1528'
+          });
+          done();
+        });
     });
   });
 });
@@ -56,8 +70,8 @@ const Browser = require('zombie');
 
 suite('Functional Tests with Zombie.js', function () {
   this.timeout(5000);
-
-
+  Browser.localhost('localhost.com', 3000);
+  const browser = new Browser();  
 
   suite('Headless browser', function () {
     test('should have a working "site" property', function() {
@@ -68,14 +82,20 @@ suite('Functional Tests with Zombie.js', function () {
   suite('"Famous Italian Explorers" form', function () {
     // #5
     test('Submit the surname "Colombo" in the HTML form', function (done) {
-      assert.fail();
-
+      browser.visit('/', () => {
+        browser.fill('surname', 'Colombo')
+        browser.pressButton('submit')
+      })
+      
       done();
     });
     // #6
     test('Submit the surname "Vespucci" in the HTML form', function (done) {
-      assert.fail();
-
+      browser.visit('/', () => {
+        browser.fill('surname', 'Vespucci')
+        browser.pressButton('submit')
+      })
+      
       done();
     });
   });
